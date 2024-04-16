@@ -1,0 +1,48 @@
+name: Reproduce Issue
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Install dependencies
+        run: |
+          npm install --global @salesforce/cli
+          sf --version
+          sf plugins --core
+      - name: Authenticate DevHub and create scratch org
+        env:
+          SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
+        run: |
+          echo "${SFDX_AUTH_URL_DEVHUB}" | sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin
+          sf org create scratch -f config/project-scratch-def.json -d -a mre-incorrect-source-member-type-quickactiondefinition
+          sf project deploy start
+      - name: Apply changes in the Scratch Org
+        run: |
+          # delete Global Action in the Scratch Org
+          ./scripts/delete-global-action.sh
+          # modify another Global Action in the Scratch Org
+          ./scripts/modify-global-action-description.sh
+      - name: Try pulling the changes
+        run: |
+          sf project retrieve preview
+      - name: Check if issue still exists
+        run: |
+          # fails when there is a SourceMember of type "QuickActionDefinition"
+          ./scripts/check-if-issue-still-exists.sh
+      - name: Delete scratch org
+        if: always()
+        run: |
+          sf org delete scratch -p
