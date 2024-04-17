@@ -9,6 +9,8 @@
 > [!IMPORTANT]
 > A green status badge means the issue was successfully reproduced.
 
+https://github.com/mdapi-issues/mre-incorrect-source-member-type-quickactiondefinition/assets/789765/357d0b69-a8be-439a-8a6f-b2ae1209688e
+
 ## Instructions
 
 In a Scratch Org, delete the Global Action "New Group".
