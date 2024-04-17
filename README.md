@@ -29,7 +29,9 @@ No files will be retrieved.
 No files were ignored. Update your .forceignore file if you want to ignore certain files.
 ```
 
-> [!NOTE] `QuickActionDefinition` is not a valid Metadata Type and so it cannot be retrieved/deleted.
+> [!NOTE]
+>
+> `QuickActionDefinition` is not a valid Metadata Type and so it cannot be retrieved/deleted.
 
 For comparison, when modifiying or creating a Global Action, the `SourceMember.MemberType` correctly shows up as `QuickAction` and the change can be retrieved:
 
